@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { projects } from './data/projects'
 import ProjectCard from './components/ProjectCard'
 import ProjectDetailPage from './components/ProjectDetailPage'
+import StackIcon from './components/StackIcon'
 
 function Header() {
   return (
-    <header className="mb-12 border-b border-[#d81927]/25 pb-8">
+    <header className="mb-12 border-b border-[#6a4247]/48 pb-8">
       <div className="max-w-3xl">
-        <h1 className="font-cinzel text-4xl font-semibold tracking-calm text-[#f5f5f5] sm:text-5xl">
+        <h1 className="font-cinzel text-5xl font-semibold tracking-calm text-[#f0e8e2] sm:text-6xl">
           Project Stacks
         </h1>
       </div>
@@ -23,15 +24,16 @@ function StackChip({ label, isActive, onClick, inverted = false }) {
         event.stopPropagation()
         onClick()
       }}
-      className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium tracking-[0.04em] transition ${
+      className={`inline-flex items-center justify-center rounded-xl border transition ${
         inverted
-          ? 'border-[#2f2f2f] bg-[#111111] text-[#d0d0d0] hover:border-[#4b4b4b] hover:bg-[#181818]'
-          : 'border-[#3a3a3a] bg-[#1a1a1a] text-[#e5e5e5] hover:border-[#575757] hover:bg-[#232323]'
+          ? 'h-12 w-12 border-[#8a7f85] bg-[#817981] hover:border-[#9a8f95] hover:bg-[#8b838b]'
+          : 'h-12 w-12 border-[#8a7f85] bg-[#817981] hover:border-[#9a8f95] hover:bg-[#8b838b]'
       }`}
+      aria-label={label}
+      title={label}
       aria-pressed={isActive}
     >
-      <span className="h-2.5 w-2.5 rounded-sm bg-[#a0a0a0]" />
-      <span>{label}</span>
+      <StackIcon label={label} className="h-6 w-6" chrome={false} />
     </button>
   )
 }
@@ -79,7 +81,7 @@ export default function App() {
 
   if (activeProjectId) {
     return (
-      <div className="min-h-screen bg-[#121212] text-[#f5f5f5]">
+      <div className="min-h-screen bg-[#2d2b33] text-[#ece6e1]">
         <ProjectDetailPage
           project={activeProject}
           onBack={handleBackToProjects}
@@ -89,11 +91,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#121212] text-[#f5f5f5]">
+    <div className="min-h-screen bg-[#2d2b33] text-[#ece6e1]">
       <div className="mx-auto max-w-5xl px-6 pb-16 pt-10 sm:px-8 sm:pt-14 lg:px-12 lg:pt-20">
         <Header />
 
-        <main className="grid gap-6 md:grid-cols-2">
+        <main className="grid items-stretch gap-6 md:grid-cols-2">
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
