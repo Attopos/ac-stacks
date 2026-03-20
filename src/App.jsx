@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { projects } from './data/projects'
+import { projects, stackNotes } from './data/projects'
 import ProjectCard from './components/ProjectCard'
 import ProjectDetailPage from './components/ProjectDetailPage'
+import StackDetailPage from './components/StackDetailPage'
 import StackIcon from './components/StackIcon'
 
 function Header() {
@@ -16,7 +17,7 @@ function Header() {
   )
 }
 
-function StackChip({ label, isActive, onClick, inverted = false }) {
+function StackChip({ label, onClick }) {
   return (
     <button
       type="button"
@@ -24,30 +25,39 @@ function StackChip({ label, isActive, onClick, inverted = false }) {
         event.stopPropagation()
         onClick()
       }}
-      className={`inline-flex items-center justify-center rounded-xl border transition ${
-        inverted
-          ? 'h-12 w-12 border-[#8a7f85] bg-[#817981] hover:border-[#9a8f95] hover:bg-[#8b838b]'
-          : 'h-12 w-12 border-[#8a7f85] bg-[#817981] hover:border-[#9a8f95] hover:bg-[#8b838b]'
-      }`}
+      className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-[#8a7f85] bg-[#817981] transition hover:border-[#9a8f95] hover:bg-[#8b838b]"
       aria-label={label}
       title={label}
-      aria-pressed={isActive}
     >
       <StackIcon label={label} className="h-6 w-6" chrome={false} />
     </button>
   )
 }
 
-function getProjectIdFromPath(pathname) {
-  const match = pathname.match(/^\/projects\/([^/]+)$/)
-  return match ? decodeURIComponent(match[1]) : null
+function getRoute(pathname) {
+  const projectMatch = pathname.match(/^\/projects\/([^/]+)$/)
+  if (projectMatch) {
+    return {
+      type: 'project',
+      slug: decodeURIComponent(projectMatch[1]),
+    }
+  }
+
+  const stackMatch = pathname.match(/^\/stacks\/([^/]+)$/)
+  if (stackMatch) {
+    return {
+      type: 'stack',
+      slug: decodeURIComponent(stackMatch[1]),
+    }
+  }
+
+  return {
+    type: 'home',
+    slug: null,
+  }
 }
 
 export default function App() {
-  const [selectedStack, setSelectedStack] = useState({
-    projectId: projects[0].id,
-    stack: projects[0].stacks[0],
-  })
   const [pathname, setPathname] = useState(window.location.pathname)
 
   useEffect(() => {
@@ -59,32 +69,54 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  const handleSelectStack = (projectId, stack) => {
-    setSelectedStack({ projectId, stack })
-  }
-
-  const handleOpenProject = (project) => {
-    const nextPath = `/projects/${project.id}`
+  const navigateTo = (nextPath) => {
     window.history.pushState({}, '', nextPath)
     setPathname(nextPath)
   }
 
-  const handleBackToProjects = () => {
-    window.history.pushState({}, '', '/')
-    setPathname('/')
+  const handleOpenProject = (project) => {
+    navigateTo(`/projects/${project.id}`)
   }
 
-  const activeProjectId = getProjectIdFromPath(pathname)
-  const activeProject = activeProjectId
-    ? projects.find((project) => project.id === activeProjectId) ?? null
-    : null
+  const handleOpenStack = (stack) => {
+    navigateTo(`/stacks/${encodeURIComponent(stack)}`)
+  }
 
-  if (activeProjectId) {
+  const handleBackToProjects = () => {
+    navigateTo('/')
+  }
+
+  const route = getRoute(pathname)
+
+  if (route.type === 'project') {
+    const activeProject =
+      projects.find((project) => project.id === route.slug) ?? null
+
     return (
       <div className="min-h-screen bg-[#2d2b33] text-[#ece6e1]">
         <ProjectDetailPage
           project={activeProject}
           onBack={handleBackToProjects}
+          onOpenStack={handleOpenStack}
+        />
+      </div>
+    )
+  }
+
+  if (route.type === 'stack') {
+    const relatedProjects = projects.filter((project) =>
+      project.stacks.includes(route.slug),
+    )
+    const stackExists = Boolean(stackNotes[route.slug]) || relatedProjects.length > 0
+
+    return (
+      <div className="min-h-screen bg-[#2d2b33] text-[#ece6e1]">
+        <StackDetailPage
+          stack={stackExists ? route.slug : null}
+          summary={stackExists ? stackNotes[route.slug] : null}
+          relatedProjects={relatedProjects}
+          onBack={handleBackToProjects}
+          onOpenProject={handleOpenProject}
         />
       </div>
     )
@@ -100,8 +132,7 @@ export default function App() {
             <ProjectCard
               key={project.id}
               project={project}
-              selected={selectedStack}
-              onSelect={handleSelectStack}
+              onOpenStack={handleOpenStack}
               onOpenDetail={handleOpenProject}
               StackChip={StackChip}
             />

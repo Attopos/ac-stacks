@@ -2,8 +2,14 @@ import { ArrowLeft } from 'lucide-react'
 import ProjectIcon from './ProjectIcon'
 import StackIcon from './StackIcon'
 
-export default function ProjectDetailPage({ project, onBack, onOpenStack }) {
-  if (!project) {
+export default function StackDetailPage({
+  stack,
+  summary,
+  relatedProjects,
+  onBack,
+  onOpenProject,
+}) {
+  if (!stack) {
     return (
       <div className="mx-auto max-w-5xl px-6 pb-16 pt-10 sm:px-8 sm:pt-14 lg:px-12 lg:pt-20">
         <button
@@ -16,7 +22,7 @@ export default function ProjectDetailPage({ project, onBack, onOpenStack }) {
         </button>
         <div className="mt-10 rounded-[28px] border border-[#595158] bg-[#403d46] p-8 text-[#ece6e1]">
           <h2 className="font-cinzel text-4xl font-semibold tracking-calm">
-            Project not found
+            Stack not found
           </h2>
         </div>
       </div>
@@ -36,41 +42,65 @@ export default function ProjectDetailPage({ project, onBack, onOpenStack }) {
 
       <div className="mt-8 flex flex-col gap-5 border-b border-[#5d565c] pb-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-center gap-4">
-          <ProjectIcon project={project} className="h-16 w-16" imageClassName="h-10 w-10" />
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#8a7f85] bg-[#817981]">
+            <StackIcon label={stack} className="h-9 w-9" chrome={false} />
+          </div>
           <div className="min-w-0">
             <h1 className="font-cinzel text-4xl font-semibold tracking-calm text-[#f0e8e2] sm:text-5xl">
-              {project.name}
+              {stack}
             </h1>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {project.stacks.map((stack) => (
-            <button
-              key={stack}
-              type="button"
-              onClick={() => onOpenStack(stack)}
-              className="rounded-xl transition hover:opacity-90"
-              aria-label={stack}
-              title={stack}
-            >
-              <StackIcon label={stack} className="h-12 w-12" />
-            </button>
-          ))}
+          {relatedProjects.length > 0 ? (
+            relatedProjects.slice(0, 3).map((project) => (
+              <button
+                key={project.id}
+                type="button"
+                onClick={() => onOpenProject(project)}
+                className="rounded-2xl transition hover:opacity-90"
+                aria-label={project.name}
+                title={project.name}
+              >
+                <ProjectIcon
+                  project={project}
+                  className="h-12 w-12"
+                  imageClassName="h-7 w-7"
+                />
+              </button>
+            ))
+          ) : (
+            <StackIcon label={stack} className="h-12 w-12" />
+          )}
         </div>
       </div>
 
       <section className="mt-6">
         <div>
           <p className="text-[11px] uppercase tracking-[0.28em] text-[#b7aaa4]">
-            Dev Log
+            Stack Overview
+          </p>
+        </div>
+
+        <div className="mt-4 rounded-[26px] border border-[#655d64] bg-[#4a4750] p-4 sm:p-5">
+          <p className="text-[15px] leading-8 text-[#e6ddd7]">
+            {summary ?? 'A core part of the current project set.'}
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-6">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.28em] text-[#b7aaa4]">
+            Stack Notes
           </p>
         </div>
 
         <div className="mt-4 rounded-[26px] border border-[#655d64] bg-[#4a4750] p-4 sm:p-5">
           <textarea
             className="min-h-[440px] w-full resize-y border-0 bg-transparent text-[15px] leading-8 text-[#e6ddd7] outline-none placeholder:text-[#a79892]"
-            placeholder="Add notes, history, or implementation details here..."
+            placeholder="Add implementation notes, references, patterns, or reminders for this stack..."
           />
         </div>
       </section>

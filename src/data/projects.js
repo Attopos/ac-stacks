@@ -1,8 +1,11 @@
+import portfolioIcon from '../assets/project-icons/portfolio-icon.svg'
+
 export const projects = [
   {
     id: 'portfolio-tracker',
     name: 'Portfolio Tracker',
     iconLabel: 'PT',
+    iconSrc: portfolioIcon,
     stacks: ['React', 'Vite', 'Express', 'JavaScript', 'CSS', 'SQLite'],
     devLog: [
       'Reshaping the interface so portfolio views feel calmer and easier to scan.',

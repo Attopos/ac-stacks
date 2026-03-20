@@ -1,14 +1,12 @@
 import { ArrowUpRight } from 'lucide-react'
+import ProjectIcon from './ProjectIcon'
 
 export default function ProjectCard({
   project,
-  selected,
-  onSelect,
+  onOpenStack,
   onOpenDetail,
   StackChip,
 }) {
-  const activeStack = selected?.projectId === project.id ? selected.stack : null
-
   return (
     <article className="flex flex-col self-stretch overflow-hidden rounded-[28px] border border-[#595158] bg-[#3a3740] shadow-[0_22px_54px_rgba(7,8,10,0.16)] transition duration-300 hover:-translate-y-1 hover:border-[#6a6068]">
       <div className="flex items-start justify-between gap-6 border-b border-[#cac0ba] bg-[#e3d8d1] px-6 pb-5 pt-6">
@@ -17,9 +15,7 @@ export default function ProjectCard({
             {project.name}
           </h2>
         </div>
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#c9beb8] bg-[#f3ece7] text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-[#2d2627] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
-          {project.iconLabel}
-        </div>
+        <ProjectIcon project={project} className="h-12 w-12" imageClassName="h-7 w-7" />
       </div>
 
       <div className="flex flex-1 flex-col gap-6 bg-[#403d46] px-6 py-6">
@@ -28,8 +24,7 @@ export default function ProjectCard({
             <StackChip
               key={stack}
               label={stack}
-              isActive={activeStack === stack}
-              onClick={() => onSelect(project.id, stack)}
+              onClick={() => onOpenStack(stack)}
             />
           ))}
         </div>
