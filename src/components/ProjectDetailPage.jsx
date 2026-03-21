@@ -174,7 +174,7 @@ export default function ProjectDetailPage({
         className="inline-flex items-center gap-2 rounded-full border border-[#7b7076] bg-[#403d46] px-4 py-2 text-sm text-[#dfd3cd] transition hover:border-[#94868d] hover:bg-[#49454f]"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to projects
+        Back
       </button>
 
       <div className="mt-8 flex flex-col gap-5 border-b border-[#5d565c] pb-6 sm:flex-row sm:items-start sm:justify-between">

@@ -539,7 +539,7 @@ export default function App() {
           stack={stackExists ? route.slug : null}
           stackNote={stackExists ? stackPageNotes[route.slug] ?? '' : ''}
           relatedProjects={relatedProjects}
-          onBack={handleBackToProjects}
+          onBack={handleOpenStacksPage}
           onOpenProject={handleOpenProject}
           onStackNoteChange={handleStackNoteChange}
         />
